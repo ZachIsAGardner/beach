@@ -2,6 +2,7 @@ pico-8 cartridge // http://www.pico-8.com
 version 21
 __lua__
 -- lifecycle
+-- 0
 
 actors = {}
 
@@ -34,17 +35,26 @@ function _init()
 	-- barrels
 	replace_with_actor(38,33)
 
+	-- create player
 	pl = define_player()
 	create_actor(pl)
+
+	-- create circle
+	local c = define_circle()
+	c.x = 8
+	c.y = 8
+	c.flags[f_en_atk] = true
+	c.r = 0.5
+	create_actor(c)
 
 	music(0)
 end
 
 --update
 function _update()
-	control_player()
-
-    foreach(actors, update_actor)
+    for a in all(actors) do
+		a:update()
+	end
 
 	camera(
 		get_room().x,
@@ -60,10 +70,10 @@ function _draw()
 	-- draw map
 	map()
 
-	circfill(pl.x*8,pl.y*8,8,c_red)
-
 	-- draw actors
-	foreach(actors,draw_actor)
+	for a in all(actors) do
+		a:draw()
+	end
 	pal()
 
 	print(pl.health, get_room().x + 2, get_room().y + 2, c_white)
@@ -71,24 +81,27 @@ function _draw()
 	-- debug
     draw_log()
 	-- draw_actor(d_draw)
-	d_draw = { x=-10,y=-10,frame=15 }
+	-- d_draw = { x=-10,y=-10,frame=15 }
 end
 
 
 -->8
 -- implementations
+-- 1
 
-function control_player()
-	if (btn(0)) pl.vx -= pl.acc
-	if (btn(1)) pl.vx += pl.acc
-	if (btn(2)) pl.vy -= pl.acc
-	if (btn(3)) pl.vy += pl.acc
+function update_player(a)
+	update_actor(a)
+	
+	if (btn(0)) a.vx -= a.acc
+	if (btn(1)) a.vx += a.acc
+	if (btn(2)) a.vy -= a.acc
+	if (btn(3)) a.vy += a.acc
 	
 	if (btn(0) or btn (1) 
 	or btn(2) or btn(3)) then
-		pl.frame = 2
+		a.frame = 2
 	else
-		pl.frame = 1
+		a.frame = 1
 	end
 end
 
@@ -125,8 +138,13 @@ function draw_actor(a)
 	spr(a.frame, sx, sy)
 end
 
+function draw_circle(a)
+	circfill(a.x * 8,a.y * 8, a.r * 8, c_red)
+end
+
 -->8
 -- definitions
+-- 2
 
 function define_actor()
 	return {
@@ -151,8 +169,21 @@ function define_actor()
 		health = 1,
 		max_health = 1,
 		invi_length = 0.125,
-		invi_timestamp = -10
+		invi_timestamp = -10,
+
+		update=update_actor,
+		draw=draw_actor
 	}
+end
+
+function define_circle()
+	local a = define_actor()
+
+	a.draw = draw_circle
+	a.frame = nil
+	a.r = 1
+
+	return a
 end
 
 function define_player()
@@ -176,11 +207,14 @@ function define_player()
 
 	a.invi_length = 0.75
 
+	a.update = update_player
+
 	return a
 end
 
 -->8
 -- collision
+-- 3
 
 function move_actor(a)
 	local skin = 0.02
@@ -296,8 +330,7 @@ function is_solid(x,y,flag)
 	-- check collidible actors
 	for a in all(actors) do
 		if (pl != a and a.flags[flag]) then
-			if (
-				x < a.x + a.w 
+			if (x < a.x + a.w 
 				and x > a.x - a.w
 				and y < a.y + a.h
 				and y > a.y - a.h
@@ -313,37 +346,7 @@ end
 
 -->8
 -- other
-
-function create_actor(a)
-	a.start_x = a.x
-	a.start_y = a.y
-
-	for i=0,7 do
-		a.flags[i] = fget(a.frame, i)
-	end	
-	add(actors, a)
-end
-
-function actor_is_invincible(a)
-	if (not a.invi_timestamp) return false
-
-	return (time() - a.invi_timestamp) <= a.invi_length
-end
-
-function replace_with_actor(t, r) 
-    for y=0,256 do for x=0,256 do
-        if (mget(x,y) == t) then
-			mset(x,y,r)
-
-			local a = define_actor()
-			a.x = x+(4/8)
-			a.y = y+(4/8)
-			a.frame = t
-			
-			create_actor(a)
-		end
-    end
-end end
+-- 4
 
 function draw_text(m)
 	r = get_room()
@@ -368,6 +371,41 @@ end
 
 -->8
 -- utility
+-- 5
+
+function actor_is_invincible(a)
+	if (not a.invi_timestamp) return false
+
+	return (time() - a.invi_timestamp) <= a.invi_length
+end
+
+function create_actor(a)
+	a.start_x = a.x
+	a.start_y = a.y
+
+	if (a.frame != nil) then
+		for i=0,7 do
+			a.flags[i] = fget(a.frame, i)
+		end	
+	end
+
+	add(actors, a)
+end
+
+function replace_with_actor(t, r) 
+    for y=0,256 do for x=0,256 do
+        if (mget(x,y) == t) then
+			mset(x,y,r)
+
+			local a = define_actor()
+			a.x = x+(4/8)
+			a.y = y+(4/8)
+			a.frame = t
+			
+			create_actor(a)
+		end
+    end
+end end
 
 function log(m)
 	log_count += 1
