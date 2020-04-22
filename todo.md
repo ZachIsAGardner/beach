@@ -8,6 +8,8 @@ beach:
 * checkpoints
 * pan towards start after start screen
 * add smart check for player instance
+* move player sprites to character sprite screen
+* add invincible roll.
 
 * add shadows?
 * add coins?
