@@ -1,14 +1,12 @@
 beach:
-* make actors inactive when off screen
 
 * health pickup
-* title screen
+* bouncing enemy type 
+
+* checkpoints
 * ending ship to take you away/ end game
 * death screen/ game over
-* checkpoints
-* pan towards start after start screen
-* add smart check for player instance
-* move player sprites to character sprite screen
+* destructible items
 * add invincible roll.
 
 * add shadows?
