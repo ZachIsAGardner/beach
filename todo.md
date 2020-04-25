@@ -1,17 +1,19 @@
 beach:
 
 in progress:
+* add bomb
 
 todo:
-* checkpoints
-* add destructile tiles at beginning to block the way (force player to learn attack).
-* ending ship to take you away/ end game
 * death screen/ game over
-* destructible items
 * make seagulls afraid of enemies
 * add shooting enemy type
+* add rotating fire enemy
+* add leaping enemy
+* crab boss
 
 maybe:
 * add invincible roll.
+* dungeon sequence
 * add shadows
-* add coins
+* mimic
+* treasure chest
