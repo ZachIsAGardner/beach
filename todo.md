@@ -1,19 +1,19 @@
 beach:
 
 in progress:
-* add bomb
+* dungeon sequence
+* smart replace actor
 
 todo:
-* death screen/ game over
 * make seagulls afraid of enemies
-* add shooting enemy type
 * add rotating fire enemy
 * add leaping enemy
 * crab boss
 
 maybe:
-* add invincible roll.
-* dungeon sequence
+* death screen/ game over
 * add shadows
 * mimic
 * treasure chest
+* add invincible roll.
+* add traps
