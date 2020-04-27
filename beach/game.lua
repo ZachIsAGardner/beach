@@ -6,6 +6,8 @@ actor_iteration = 0
 
 camera_pos = { x = 0, y = 0, s = 0.025}
 
+debug_mode=true
+
 started=false
 started_timestamp=nil
 
@@ -17,10 +19,11 @@ log_count = 0
 
 --init
 function _init()
-	--start()
-    --camera_pos.s=0.25
+    if (debug_mode) then
+        start()
+        camera_pos.s=0.25
+    end
     
-	init_actors()
 	music(63)
 end
 
@@ -57,8 +60,8 @@ function _update()
 	camera(camera_pos.x, camera_pos.y)
 
 	-- update actors
-    for a in all(actors) do
-		a:update()
+	for a in all(actors) do
+		if (is_in_room(a) or pl and a.id == pl.id) a:update()
 	end
 end
 
@@ -73,7 +76,7 @@ function _draw()
 	-- draw actors
 	for i=0,2 do
 		for a in all(actors) do
-			if (a.z==i) a:draw()
+			if (a.z==i and is_in_room(a)) a:draw()
 		end
 	end
 
@@ -96,6 +99,10 @@ function _draw()
 end
 
 function debug()
-	print("fps: " .. stat(7), camera_pos.x+1, camera_pos.y+120, c_white)
+	rectfill(camera_pos.x,camera_pos.y+119,camera_pos.x+40,camera_pos.y+125,c_dark_blue)
+	local color = c_white
+	if (stat(7) != 30) color = c_red
+	print("fps: " .. stat(7), camera_pos.x+1, camera_pos.y+120, color)
+	
     draw_log()
 end

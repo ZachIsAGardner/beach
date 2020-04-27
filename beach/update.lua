@@ -43,6 +43,8 @@ function update_player(a)
 			a.x = pl.x
 			a.y = pl.y
 		end
+		circle.x=pl.x
+		circle.y=pl.y
 		circle.z=0
 		circle.r=1.7
 		circle.w=1.7
@@ -206,8 +208,6 @@ function update_player(a)
 end
 
 function update_shooter(a)
-	if (not is_on_screen(a)) return
-
 	update_actor(a)
 	update_enemy_health(a)
 
@@ -236,8 +236,6 @@ function update_shooter(a)
 end
 
 function update_follower(a)
-	if (not is_on_screen(a)) return
-
 	update_actor(a)
 	update_enemy_health(a)
 
@@ -257,8 +255,6 @@ function update_follower(a)
 end
 
 function update_bouncer(a) 
-	if (not is_on_screen(a)) return
-
 	local s = 0.09
 
 	if (not a.start) then

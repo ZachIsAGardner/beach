@@ -4,7 +4,7 @@
 function start() 
 	started=true
 	started_timestamp=time()
-	-- init_actors()
+	init_actors()
 end
 
 function init_actors()
@@ -26,6 +26,11 @@ function init_actors()
 			a.update=function(a)
 				if (started and time() - started_timestamp > 2.5 and not a.go) then
 					a.i=0
+					a.go=true
+				end
+
+				if (debug_mode) then
+					a.i=44
 					a.go=true
 				end
 

@@ -6,7 +6,21 @@ function is_on_screen(a)
 	local y = a.y*8
 
 	if (x >= camera_pos.x and x <= camera_pos.x + 128 
-		and y >= camera_pos.y and y <= camera_pos.y + 128) then
+	and y >= camera_pos.y and y <= camera_pos.y + 128) then
+		return true
+	else
+		return false
+	end
+end
+
+function is_in_room(a)
+	local x = a.x*8
+	local y = a.y*8
+
+	local r = get_room()
+
+	if (x >= r.x and x <= r.x + 128 
+	and y >= r.y and y <= r.y + 128) then
 		return true
 	else
 		return false
