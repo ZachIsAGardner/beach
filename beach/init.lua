@@ -172,6 +172,7 @@ function init_actors()
 			
 			if (pl_close and not a.escape) then
 				a.escape=true
+				a.destroy_offscreen=true
 
 				a.vy=-0.25
 				if (a.flip) then

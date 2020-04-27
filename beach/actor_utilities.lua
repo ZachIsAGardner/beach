@@ -85,7 +85,7 @@ end end
 --
 
 function create_hit_effect(a)
-	for i=0,rnd(2)+3 do
+	for i=0,rnd(2)+1 do
 		local p = define_particle(125,126)
 
 		p.x = a.x

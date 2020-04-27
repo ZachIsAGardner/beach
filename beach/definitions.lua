@@ -39,7 +39,9 @@ function define_actor()
 		anims=nil, -- define animations
 		current_anim="idle", -- current animation
 
-		col={}
+		col={},
+
+		destroy_offscreen=false -- destroy if leaves screen
 	}
 end
 
@@ -109,6 +111,7 @@ function define_projectile(x,y,damp)
 	c.h = 0.3
 	c.color = c_red
 	c.max_lifetime=2
+	c.destroy_offscreen=true
 
 	return c
 end

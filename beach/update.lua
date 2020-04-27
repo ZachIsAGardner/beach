@@ -218,6 +218,9 @@ function update_shooter(a)
 		a.shoot_timestamp = time()
 		
 		local c = define_projectile(a.x,a.y,8)
+
+		c.max_lifetime=3
+
 		sfx(18)
 
 		create_actor(c)
@@ -298,7 +301,12 @@ end
 function update_actor(a) 
 	-- check lifetime
 	if (a.max_lifetime != nil and time() - a.birth_timestamp > a.max_lifetime) then
-		del(actors, a)
+		del(actors,a)
+		return;
+	end
+
+	if (a.destroy_offscreen and not is_on_screen(a)) then
+		del(actors,a)
 		return;
 	end
 
