@@ -1,3 +1,6 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- definitions
 
@@ -40,6 +43,8 @@ function define_actor()
 		current_anim="idle", -- current animation
 
 		col={},
+
+		is_active=true,
 
 		destroy_offscreen=false -- destroy if leaves screen
 	}

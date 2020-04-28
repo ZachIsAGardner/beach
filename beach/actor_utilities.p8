@@ -1,3 +1,6 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- actors utilities
 
@@ -67,7 +70,9 @@ end
 function replace_with_actor(t, r, callback, define) 
 	if (not define) define = define_actor
 
-    for y=0,256 do for x=0,256 do
+	local room = get_room_grid()
+	
+    for y=room.y,room.y+16 do for x=room.x,room.x+16 do
         if (mget(x,y) == t) then
 			if (r) mset(x,y,r)
 
@@ -79,13 +84,23 @@ function replace_with_actor(t, r, callback, define)
 	
 			create_actor(a)
 		end
-    end
-end end
+    end end
+end
+
+function find_tile(t)
+	for y=0,127 do for x=0,63 do
+		if (mget(x,y)==t) then
+			return {x=x,y=y}
+		end
+	end end
+
+	return nil
+end
 
 --
 
 function create_hit_effect(a)
-	for i=0,rnd(2)+1 do
+	for i=0,rnd(2)+3 do
 		local p = define_particle(125,126)
 
 		p.x = a.x
@@ -133,7 +148,7 @@ function create_drop(a,f)
 end
 
 function create_dust_cloud(a)
-	for i=0,rnd(2)+1 do
+	for i=0,rnd(2)+3 do
 		local p = define_particle(109,111)
 
 		p.x = a.x
@@ -158,6 +173,7 @@ function create_dust(a,f)
 		p.friction=0
 		p.collidible=false
 		p.anim_duration=0.25
+		p.destroy_offscreen=true
 
 		create_actor(p)
 	end)

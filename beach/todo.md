@@ -10,11 +10,13 @@ todo:
 * crab boss
 * actors get spawned on room entry, not on game start
 * better transition to checkpoint
+* elevator to tower (warping)
 
 maybe:
+* log include bug on pico site.
+* improve performance
 * add sprite coordinates in addition to existing object position coordinates
 * re init enemies after dying
-* elevator to tower (warping)
 * death screen/ game over
 * add shadows
 * mimic

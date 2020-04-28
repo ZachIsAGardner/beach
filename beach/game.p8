@@ -1,12 +1,23 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- game
 
 actors = {}
 actor_iteration = 0
+disabled_actors = {}
 
 camera_pos = { x = 0, y = 0, s = 0.025}
 
-debug_mode=true
+transition = nil
+
+door_timestamp=nil
+
+current_room=nil
+visited_rooms={}
+
+debug_mode=false
 
 started=false
 started_timestamp=nil
@@ -59,9 +70,62 @@ function _update()
 	-- update camera
 	camera(camera_pos.x, camera_pos.y)
 
+	cleanup_rooms()
+
+	if (transition != nil) then 
+		return
+	end
+
 	-- update actors
 	for a in all(actors) do
-		if (is_in_room(a) or pl and a.id == pl.id) a:update()
+		if (a.is_active) then 
+			a:update()
+		end
+	end
+end
+
+function cleanup_rooms()
+	local r = get_room()
+	local new_room = false
+	if (current_room == nil or not (r.x == current_room.x and r.y == current_room.y)) then
+		new_room = true
+	end
+	current_room = r
+
+	if (new_room) then
+		log("n")
+		local first_visit = true
+		for visited_room in all(visited_rooms) do
+			if visited_room.x == current_room.x and visited_room.y == current_room.y then
+				log("revisit")
+				first_visit = false
+				break
+			end
+		end
+
+		if (first_visit) then
+			init_actors()
+			add(visited_rooms,current_room)
+		end
+		
+		for da in all(disabled_actors) do
+			add(actors,da)
+		end
+
+		disabled_actors={}
+
+		for a in all(actors) do
+			if (not is_in_room(a)) then 
+				if (a.destroy_offscreen) then
+					del(actors,a)
+				else
+					add(disabled_actors,a)
+					del(actors,a)
+				end
+			end
+		end
+
+		log("a= " .. #actors .. ", da= " .. #disabled_actors)
 	end
 end
 
@@ -76,7 +140,7 @@ function _draw()
 	-- draw actors
 	for i=0,2 do
 		for a in all(actors) do
-			if (a.z==i and is_in_room(a)) a:draw()
+			if (a.z==i and a.is_active) a:draw()
 		end
 	end
 
@@ -94,8 +158,12 @@ function _draw()
     end
 
     night_mode()
-    
-    debug()
+
+	if (transition) then
+		transition_screen()
+	end
+	
+    if (debug_mode) debug()
 end
 
 function debug()

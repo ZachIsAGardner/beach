@@ -1,3 +1,6 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- update
 
@@ -153,8 +156,8 @@ function update_player(a)
 				if (actor_is_invincible(hit_atk.a)) then
 					continue = false
 				else
-					a.vx = hit_atk.a.vx * 5
-					a.vy = hit_atk.a.vy * 5
+					a.vx = hit_atk.a.vx * 2
+					a.vy = hit_atk.a.vy * 2
 				end
 			end
 		end
@@ -205,6 +208,86 @@ function update_player(a)
 		game_ended=true
 		game_ended_timestamp=time()
 	end
+
+	local hit_trap = is_solid_area(a.x,a.y,a.w,a.h,nil,function(c) return c.tag=="trap" end)
+
+	if (hit_trap.hit) then
+		hit_trap.a.activated=true
+	end
+
+	local hit_door = is_solid_area(a.x,a.y,a.w,a.h,nil,function(c) return c.tag=="door" end)
+
+	if (hit_door.hit) then
+		local r = get_room()
+
+		local doors={
+			{enter={x=128,y=128},exit={x=121,y=5}}, 
+			{enter={x=896,y=0},exit={x=29,y=28}}, 
+			{enter={x=768,y=128},exit={x=119,y=19}}
+		}
+
+		local target = nil
+		for door in all(doors) do
+			if (door.enter.x == r.x and door.enter.y == r.y) then 
+				target = door 
+				break 
+			end
+		end
+
+		if (target) then
+			transition = { 
+				x = target.exit.x, 
+				y = target.exit.y, 
+				start_timestamp = time(), 
+				length = 1.5, 
+				camera_pos_s=camera_pos.s,
+				progress=0
+			}
+		end
+	end
+end
+
+function transition_screen()
+	if not transition.started then
+		camera_pos.s = 1
+		sfx(19)
+		transition.started = true
+	end
+
+
+	local diff = time() - transition.start_timestamp
+
+	if (time() - transition.start_timestamp > transition.length) then 
+		camera_pos.s = transition.camera_pos_s
+		transition = nil
+		return
+	end
+
+	if (diff > transition.length / 2) then
+		transition.progress -= 1
+
+		pl.x = transition.x
+		pl.y = transition.y
+		pl.vx = 0
+		pl.vy = 0.2
+
+		if not transition.descended and transition.progress < 8 then
+			sfx(20)
+			transition.descended = true
+		end
+	else
+		transition.progress += 1
+	end
+
+	for y=0,16 do for x=0,16 do
+		rectfill(
+			camera_pos.x+(x*8),
+			camera_pos.y+(y*8),
+			camera_pos.x+(x*8)+transition.progress,
+			camera_pos.y+(y*8)+transition.progress,
+			c_dark_purple
+		)
+	end end
 end
 
 function update_shooter(a)

@@ -1,3 +1,6 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- utilities
 
@@ -12,6 +15,13 @@ function draw_log()
 	local j = 0
 	local i = #logs
 	while i > 0 and j < 10 do
+		rectfill(
+			camera_pos.x + o.x,
+			camera_pos.y + (j * 8) + o.y,
+			camera_pos.x + o.x+64,
+			camera_pos.y + (j * 8) + o.y + 5,
+			c_dark_blue
+		)
 		print(logs[i].c .. ": " .. logs[i].m, camera_pos.x + o.x, camera_pos.y + (j * 8) + o.y, c_white)
 		i-=1
 		j+=1
@@ -38,11 +48,34 @@ function pal_all(c)
 end
 
 function get_room()
-	if (pl == nil) return { x=0,y=0 }
+	local t = nil
+	if (pl != nil) then
+		t = pl
+	else
+		-- t = find_tile(112)
+	end
+
+	if (t == nil) return {x=0,y=0}
 
 	return {
-		x=flr(pl.x/16)*128,
-		y=flr(pl.y/16)*128
+		x=flr(t.x/16)*128,
+		y=flr(t.y/16)*128
+	}
+end
+
+function get_room_grid()
+	local t = nil
+	if (pl != nil) then
+		t = pl
+	else
+		-- t = find_tile(112)
+	end
+
+	if (t == nil) return {x=0,y=0}
+
+	return {
+		x=flr(t.x/16)*16,
+		y=flr(t.y/16)*16
 	}
 end
 

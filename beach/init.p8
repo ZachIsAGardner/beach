@@ -1,10 +1,12 @@
+pico-8 cartridge // http://www.pico-8.com
+version 21
+__lua__
 -->8
 -- init
 
 function start() 
 	started=true
 	started_timestamp=time()
-	init_actors()
 end
 
 function init_actors()
@@ -73,15 +75,29 @@ function init_actors()
 		end
 	)
 
+	-- door
+	replace_with_actor(8,nil,function(a)
+		a.update = function(a) end
+		a.tag="door"
+		a.z=0
+	end)
+	replace_with_actor(9,nil,function(a)
+		a.update = function(a) end
+		a.tag="door"
+		a.z=0
+	end)
+
 	-- trap tile
 	replace_with_actor(19,19,function(a) 
-		a.w = 0.1
-		a.h = 0.1
+		a.w = 0.4
+		a.h = 0.4
 		a.z = 0
-		a.update=function(a) 
-			local hit_pl = is_solid_area(a.x,a.y,a.w,a.h,nil,function(c) return pl and c.id == pl.id end)
+		a.collidible=false
+		a.activated=false
+		a.tag="trap"
 
-			if (hit_pl.hit and not a.triggered) then
+		a.update=function(a) 
+			if (a.activated and not a.triggered) then
 				for i=0,256 do
 					if(mget(a.x,i) == 6) then
 						mset(a.x,a.y,1)
