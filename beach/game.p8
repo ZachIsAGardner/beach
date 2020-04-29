@@ -24,6 +24,7 @@ started_timestamp=nil
 
 game_ended=false
 game_ended_timestamp=nil
+game_ended_process={}
 
 logs = {}
 log_count = 0
@@ -40,11 +41,6 @@ end
 
 --update
 function _update()
-	if (game_ended) then
-		music(-1)
-		return
-	end
-
 	if (started) then
 		-- move camera normally
 		destination = {
@@ -78,14 +74,13 @@ function _update()
 
 	-- update actors
 	for a in all(actors) do
-		if (a.is_active) then 
-			a:update()
-		end
+		a:update()
 	end
 end
 
 function cleanup_rooms()
 	local r = get_room()
+
 	local new_room = false
 	if (current_room == nil or not (r.x == current_room.x and r.y == current_room.y)) then
 		new_room = true
@@ -93,11 +88,9 @@ function cleanup_rooms()
 	current_room = r
 
 	if (new_room) then
-		log("n")
 		local first_visit = true
 		for visited_room in all(visited_rooms) do
 			if visited_room.x == current_room.x and visited_room.y == current_room.y then
-				log("revisit")
 				first_visit = false
 				break
 			end
@@ -140,7 +133,7 @@ function _draw()
 	-- draw actors
 	for i=0,2 do
 		for a in all(actors) do
-			if (a.z==i and a.is_active) a:draw()
+			if (a.z==i) a:draw()
 		end
 	end
 
@@ -151,10 +144,36 @@ function _draw()
     end
 
 	if (game_ended) then
-		print("thanks for playing", camera_pos.x + 30, camera_pos.y + 50, c_white)
-		print("coins: " .. pl.coins, camera_pos.x + 30, camera_pos.y + 58, c_white)
-		print("time: " .. flr(game_ended_timestamp / 60) .. " m " .. ceil(game_ended_timestamp % 60) .. " s", camera_pos.x + 30, camera_pos.y + 66, c_white)
-		return
+		if (time() - game_ended_timestamp > 1) then
+			draw_text("you escaped", 30, 50, 2)
+
+			if (not game_ended_process.sfx_1) then
+				sfx(3)
+				game_ended_process.sfx_1 = true
+			end
+		end
+
+		if (time() - game_ended_timestamp > 1.5) then
+			draw_text(
+				"time: " .. flr(game_ended_timestamp / 60) .. " m " 
+					.. ceil(game_ended_timestamp % 60) .. " s", 
+				30, 60, 2
+			)
+
+			if (not game_ended_process.sfx_2) then
+				sfx(3)
+				game_ended_process.sfx_2 = true
+			end
+		end
+
+		if (time() - game_ended_timestamp > 3) then
+			draw_text("thanks for playing", 30, 80, 2)
+
+			if (not game_ended_process.sfx_3) then
+				sfx(3)
+				game_ended_process.sfx_3 = true
+			end
+		end
     end
 
     night_mode()

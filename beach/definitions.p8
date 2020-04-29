@@ -77,8 +77,8 @@ function define_player()
     a.friction = 0.185
 
 	a.coins = 0
-	a.bombs = 5
-	a.max_bombs = 10
+	a.bombs = 3
+	a.max_bombs = 5
 
 	a.health = 4
 	a.max_health = 4
@@ -127,6 +127,7 @@ function define_particle(s,e)
 	a.frame = s
 	a.anims={idle={s=s,e=e,l=false,d=true}}
 	a.anim_duration=0.15
+	a.destroy_offscreen=true
 
 	return a
 end

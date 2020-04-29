@@ -88,7 +88,7 @@ function replace_with_actor(t, r, callback, define)
 end
 
 function find_tile(t)
-	for y=0,127 do for x=0,63 do
+	for y=0,63 do for x=0,127 do
 		if (mget(x,y)==t) then
 			return {x=x,y=y}
 		end
@@ -173,7 +173,6 @@ function create_dust(a,f)
 		p.friction=0
 		p.collidible=false
 		p.anim_duration=0.25
-		p.destroy_offscreen=true
 
 		create_actor(p)
 	end)

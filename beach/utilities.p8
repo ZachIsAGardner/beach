@@ -52,7 +52,7 @@ function get_room()
 	if (pl != nil) then
 		t = pl
 	else
-		-- t = find_tile(112)
+		if (debug_mode) t = find_tile(112)
 	end
 
 	if (t == nil) return {x=0,y=0}
@@ -68,7 +68,7 @@ function get_room_grid()
 	if (pl != nil) then
 		t = pl
 	else
-		-- t = find_tile(112)
+		if (debug_mode) t = find_tile(112)
 	end
 
 	if (t == nil) return {x=0,y=0}
@@ -83,4 +83,17 @@ function night_mode()
 	for i=0,15 do
 		pal(i,i+128,1)
 	end
+end
+
+function draw_text(t,x,y,p) 
+	p = p or 1
+	rectfill(
+		camera_pos.x+x-p,
+		camera_pos.y+y-p,
+		camera_pos.x+x+(#t*4)-2+p,
+		camera_pos.y+y+4+p,
+		c_dark_blue
+	)
+
+	print(t, camera_pos.x+x, camera_pos.y+y, c_white)
 end

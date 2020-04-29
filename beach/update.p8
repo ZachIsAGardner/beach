@@ -205,8 +205,35 @@ function update_player(a)
 	local hit_boat = is_solid_area(a.x,a.y,a.w,a.h,f_boat)
 
 	if (hit_boat.hit and not game_ended) then
-		game_ended=true
+		pl.draw=function(a) end
+		pl.update=function(a) end
+
+		hit_boat.a.i=0
+
+		hit_boat.a.frame=43
+		hit_boat.a.vx=-0.03
+		hit_boat.a.friction=-0.025
+		hit_boat.a.max_v=100
+		hit_boat.a.collidible=false
+		hit_boat.a.update=function(a) 
+			hit_boat.a.i+=1
+			update_actor(a)
+
+			if (hit_boat.a.i % 4 == 0) then
+				local p = define_particle(93,94)
+				p.x=hit_boat.a.x+a.w+0.35
+				p.y=hit_boat.a.y+a.h+0.35
+				p.lifetime=0.25
+				create_actor(p)
+			end
+
+			if (time() - game_ended_timestamp > 3) then
+				del(actors, hit_boat.a)
+			end
+		end
+
 		game_ended_timestamp=time()
+		game_ended=true
 	end
 
 	local hit_trap = is_solid_area(a.x,a.y,a.w,a.h,nil,function(c) return c.tag=="trap" end)
@@ -340,6 +367,52 @@ function update_follower(a)
 	end
 end
 
+function update_crab(a) 
+	local d = distance(a,pl)
+	if (abs(d.y) < 3 and abs(d.x) < 4 and not a.triggered) then 
+		a.triggered = true
+		a.i=0
+	end
+
+	if (not a.triggered) return
+
+	if (not a.normal) then
+		a.i+=1
+
+		if (a.i < 30) then
+			if (a.i % 4 == 0) then
+				sfx(3)
+				create_dust_cloud({x=a.x,y=a.y})
+				create_dust_cloud({x=a.x+1,y=a.y+1})
+			end
+		end
+
+		if (a.i == 30) then
+			a.is_active=true
+			sfx(21)
+		end
+
+		if (a.i > 45) then
+			if (a.i % 2 == 0) then
+				a.frame=73
+			else
+				a.frame=75
+			end
+		end
+
+		if (a.i == 60) then
+			sfx(3)
+			a.normal=true
+		end
+	end
+
+	if (not a.is_active) return
+
+	if (not a.normal) return
+
+	update_follower(a)
+end
+
 function update_bouncer(a) 
 	local s = 0.09
 
@@ -375,6 +448,10 @@ function update_enemy_health(a)
 	if (a.health <= 0) then
 		create_dust_cloud(a)
 		create_random_drop(a)
+
+		if (a.before_destroy != nil) then
+			a.before_destroy(a)
+		end
 		
 		sfx(7)
 		del(actors, a)	

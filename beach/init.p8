@@ -114,7 +114,7 @@ function init_actors()
 	end)
 
 	-- boat
-	replace_with_actor(41,33,function(a)
+	replace_with_actor(41,35,function(a)
 		a.w=1
 		a.h=1
 		a.s=2
@@ -131,7 +131,25 @@ function init_actors()
 			idle={s=73,e=73,l=true},
 			walk={s=73,e=75,l=true}
 		}
-		a.update=update_follower
+		a.is_active=false
+		a.update=update_crab
+		a.draw=function(a) 
+			if (a.is_active) then
+				draw_actor(a)
+			end
+		end
+		a.before_destroy=function(a) 
+			-- destroy fences
+			local room = get_room_grid()
+	
+			for y=room.y,room.y+16 do for x=room.x,room.x+16 do
+				if (mget(x,y) == 26) then
+					create_dust_cloud({x=x,y=y})
+					sfx(3)
+					mset(x,y,33)
+				end
+			end end
+		end
 	end)
 
 	-- checkpoint

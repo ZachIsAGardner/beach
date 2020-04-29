@@ -1,18 +1,17 @@
 beach:
 
 in progress:
-* dungeon sequence
+* crab entry
 
 todo:
-* make seagulls afraid of enemies
+* dungeon sequence
 * add rotating fire enemy
 * add leaping enemy
 * crab boss
-* actors get spawned on room entry, not on game start
 * better transition to checkpoint
-* elevator to tower (warping)
 
 maybe:
+* make seagulls afraid of enemies
 * log include bug on pico site.
 * improve performance
 * add sprite coordinates in addition to existing object position coordinates
