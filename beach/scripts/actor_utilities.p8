@@ -33,7 +33,7 @@ end
 function execute_on_frame(a,f,n,c)
 	if (a.frame==f and not a[n]) then
 		a[n] = true
-		c()
+		c(a)
 	else
 		if (a.frame!=f) a[n] = false
 	end
@@ -67,24 +67,53 @@ function create_actor(a)
 	return a
 end
 
-function replace_with_actor(t, r, callback, define) 
+function replace_with_actor(t, r, callback, define, should_respawn) 
 	if (not define) define = define_actor
 
 	local room = get_room_grid()
 	
     for y=room.y,room.y+16 do for x=room.x,room.x+16 do
         if (mget(x,y) == t) then
-			if (r) mset(x,y,r)
+			if (r) then 
+				mset(x,y,r)
+			else
+				mset(x,y,0)
+			end
 
 			local a = define()
 			a.x = x+(4/8)
 			a.y = y+(4/8)
 			a.frame = t
 			if (callback) callback(a)
+
+			if (a.tag != "player") then
+				-- save instructions to respawn after death
+				add(actors_to_respawn,{ 
+					define=define,
+					x=a.x,
+					y=a.y,
+					t=a.frame,
+					callback=callback,
+					room=room,
+					tag=a.tag
+				})
+			end
 	
 			create_actor(a)
 		end
     end end
+end
+
+function spawn_actor(da)
+	if (not da.define) da.define = define_actor
+
+	local a = da.define()
+	a.x = da.x
+	a.y = da.y
+	a.frame = da.t
+	if (da.callback) da.callback(a)
+
+	create_actor(a)
 end
 
 function find_tile(t)

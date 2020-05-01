@@ -16,6 +16,7 @@ function init_actors()
 		33,
 		function(a)
 			pl = a
+			a.tag="player"
 		end,
 		define_player
 	)
@@ -25,6 +26,7 @@ function init_actors()
 		119,
 		33,
 		function(a)
+			a.tag="player"
 			a.update=function(a)
 				if (started and time() - started_timestamp > 2.5 and not a.go) then
 					a.i=0
@@ -253,6 +255,45 @@ function init_actors()
 			a.max_health=3
 			a.health=3
 		end
+	)
+
+	-- bats
+	replace_with_actor(
+		66,
+		33,
+		function(a) 
+			a.update=function(a)
+				if (a.is_active) then
+					update_follower(a) 
+					a.anim_duration=max(0.05, (abs(a.vx)+abs(a.vy))/2)
+					execute_on_frame(a,68,"sfx_23",function(a) sfx(23) end)
+				else
+					local d = distance(pl,a)
+					if (abs(d.x) < 4.5 and abs(d.y) < 4.5) then
+						a.is_active=true
+						sfx(22)
+						a.vy=-0.1
+					end
+				end
+			end
+
+			a.anims={
+				idle={s=66,e=66,l=true},
+				walk={s=67,e=68,l=true}
+			}
+			a.tag="bat"
+			a.is_active=false
+			a.max_v=0.14
+			a.acc=.0065
+			a.friction=0
+			a.max_health=1
+			a.health=1
+			a.w=0.3
+			a.h=0.3
+			a.collidible=false
+		end,
+		nil,
+		true
 	)
 
 	-- slug

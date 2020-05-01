@@ -43,6 +43,7 @@ function define_actor()
 		current_anim="idle", -- current animation
 
 		col={},
+		damage=1,
 
 		is_active=true,
 

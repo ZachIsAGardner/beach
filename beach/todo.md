@@ -1,20 +1,20 @@
 # beach:
 
 in progress:
-* bat enemy
-* dungeon sequence
+* crab babies
+* crab boss
 
 todo:
-* add leaping enemy
-* add rotating fire enemy
-* crab boss
-* crab babies
-* better transition to checkpoint
+* dungeon sequence
+* bug: loading actors from one tile to right and bottom of current room 
 
 maybe:
-* re init enemies after dying
+* add leaping enemy
+* add rotating fire enemy
+* delete enemies after leaving room, or 2 rooms away
 * make seagulls afraid of enemies
 * log include bug on pico site.
+* fix no collision bug (spawn and down move up/down. You are invincible?)
 
 * improve performance
 * add traps

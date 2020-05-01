@@ -5,6 +5,70 @@ __lua__
 -- update
 
 function update_player(a)
+	if (a.is_dead) then 
+		a.i+=1
+
+		if (a.i < 10) a.frame=120
+		if (a.i == 1) then 
+			a.frame = 120
+			sfx(13)
+		end
+		if (a.i == 15) then 
+			a.x -= 0.1
+			sfx(13)
+		end
+		if (a.i == 20) then 
+			a.x += 0.2
+			sfx(13)
+		end
+		if (a.i == 25) then 
+			a.x -= 0.2
+			sfx(13)
+		end
+		if (a.i == 40) then 
+			a.x += 0.2
+			a.frame=119
+			sfx(24)
+		end
+
+		if (a.i == 60) then
+			a.is_dead = false
+			a.health = a.max_health
+
+			local x = 0
+			local y = 0
+
+			if (a.checkpoint) then
+				x = a.checkpoint.x
+				y = a.checkpoint.y
+			else
+				x = a.start_x
+				y = a.start_y
+			end
+
+			transition = { 
+				x = x, 
+				y = y, 
+				start_timestamp = time(), 
+				length = 1.5, 
+				camera_pos_s=camera_pos.s,
+				progress=0,
+				opaque_callback=function() 
+					for ac in all(actors) do
+					if (ac.id != pl.id) del(actors, ac)
+					end
+					for dac in all(disabled_actors) do
+						if (dac.id != pl.id) del(disabled_actors, dac)
+					end
+					visited_rooms={}
+					current_room=nil
+				end
+			}
+		end
+
+		return
+	end
+
 	update_actor(a)
 
 	create_dust(a,114)
@@ -164,7 +228,7 @@ function update_player(a)
 
 		if (continue) then
 			sfx(6)
-			a.health -= 1
+			a.health -= hit_atk.a.damage
 			a.invi_timestamp = time()
 
 			del(actors, a.atk_instance)
@@ -175,14 +239,8 @@ function update_player(a)
 
 	if (a.health <= 0) then
 		sfx(7)
-		a.health = a.max_health
-		if (a.checkpoint) then
-			a.x = a.checkpoint.x
-			a.y = a.checkpoint.y
-		else
-			a.x = a.start_x
-			a.y = a.start_y
-		end
+		a.is_dead=true
+		a.i=0
 	end
 
 	local hit_checkpoint = is_solid_area(a.x,a.y,a.w,a.h,f_checkpoint)
@@ -297,6 +355,11 @@ function transition_screen()
 		pl.y = transition.y
 		pl.vx = 0
 		pl.vy = 0.2
+
+		if (transition.opaque_callback and not transition.executed_opaque_callback) then
+			transition.opaque_callback()
+			transition.executed_opaque_callback=true
+		end
 
 		if not transition.descended and transition.progress < 8 then
 			sfx(20)
