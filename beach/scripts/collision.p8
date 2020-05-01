@@ -153,7 +153,6 @@ function is_solid(x,y,flag,c)
 
 	-- check map
     if fget(mget(x, y), flag) then
-		-- d_draw = {x=rx,y=ry,frame=15}
 		return { hit=true,rx=rx,ry=ry,x=x,y=y }
 	end
 
