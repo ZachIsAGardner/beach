@@ -82,7 +82,7 @@ function define_player()
 	a.max_bombs = 5
 
 	a.health = 4
-	a.max_health = 4
+	a.max_health = 6
 
 	a.invi_length = 0.8
 

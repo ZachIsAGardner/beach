@@ -13,8 +13,8 @@ maybe:
 * add rotating fire enemy
 * delete enemies after leaving room, or 2 rooms away
 * make seagulls afraid of enemies
-* log include bug on pico site.
-* fix no collision bug (spawn and down move up/down. You are invincible?)
+* make a post about the "include" bug on pico-8 site.
+* bug: no hurtbox collision for player sometimes (spawn and down move up/down. You are invincible?)
 
 * improve performance
 * add traps

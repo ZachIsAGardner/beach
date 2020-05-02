@@ -141,7 +141,7 @@ function update_player(a)
 		bomb.z=0
 		bomb.x=a.x
 		bomb.y=a.y
-		bomb.frame=106
+		bomb.frame=101
 		bomb.w=0.25
 		bomb.h=0.25
 		bomb.color=c_red
@@ -418,7 +418,7 @@ function update_follower(a)
 	create_dust(a,65)
 	execute_on_frame(a,65,"sfx_10",function() sfx(10) end)
 	
-	if (not actor_is_invincible(a)) then
+	if (not a.invi_timestamp or time() - a.invi_timestamp > 0.1) then
 		a.current_anim="walk"
 		
 		if (pl.x < a.x) a.vx -= a.acc
@@ -440,7 +440,7 @@ function update_crab(a)
 	if (not a.triggered) return
 
 	if (not a.normal) then
-		a.i+=1
+		a.i += 1
 
 		if (a.i < 30) then
 			if (a.i % 4 == 0) then
@@ -465,6 +465,9 @@ function update_crab(a)
 
 		if (a.i == 60) then
 			sfx(3)
+			a.spawn_timestamp = time()
+			a.bubble_timestamp = time()
+			a.charge_timestamp = time()
 			a.normal=true
 		end
 	end
@@ -473,7 +476,163 @@ function update_crab(a)
 
 	if (not a.normal) return
 
-	update_follower(a)
+	-- spawn babies
+	if (not a.spawn_timestamp or time() - a.spawn_timestamp > a.spawn_wait) then
+		local bca = define_actor()
+
+		bca.frame=87
+		bca.x=132
+		bca.y=flr(rnd(7))+19
+
+		bca.vx=-0.1
+		bca.friction=0
+		bca.max_v=100
+		bca.anims={
+			idle={s=87,e=88,l=true},
+			water={s=85,e=86,l=true}
+		}
+		bca.collidible=false
+		bca.tag="baby_crab"
+
+		bca.update=function(bca) 
+			if (is_on_screen(bca)) bca.destroy_offscreen=true
+
+			local hit_water = is_solid(bca.x,bca.y,f_col)
+			if (hit_water.hit) then
+				bca.current_anim="water"
+			else
+				bca.current_anim="idle"
+			end
+
+			update_actor(bca)
+			update_enemy_health(bca)
+
+			create_dust(bca,88)
+			execute_on_frame(bca,88,"sfx_10",function() sfx(10) end)
+		end
+
+		create_actor(bca)
+
+		a.spawn_timestamp=time()
+		a.spawn_wait=flr(rnd(4))+1
+	end
+
+	-- charge
+	if (not a.bubbling) then
+		if (a.charge_timestamp == nil or time() - a.charge_timestamp > a.charge_wait) then
+			a.charging=true
+
+			a.current_anim = "walk"
+
+			if (a.ci == 30) then
+				a.friction=0
+				local d = direction(pl,{x=a.x+0.5,y=a.y+0.5})
+				a.vx= d.x / 3.75
+				a.vy= d.y / 3.75
+				a.max_v=100
+				a.charging_timestamp=time()
+				sfx(17)
+			else 
+				if (a.ci < 30) then
+					a.current_anim = "bide"
+					a.friction=1
+				end
+			end
+
+			a.ci+=1
+		else
+			a.target = {x=pl.x,y=pl.y}
+		end
+
+		if (a.charging) then
+			if (a.col.top or a.col.bottom) then 
+				sfx(18)
+				a.vy *= -1 
+			end
+			if (a.col.left or a.col.right) then 
+				sfx(18)
+				a.vx *= -1 
+			end
+
+			if (a.charging_timestamp and time() - a.charging_timestamp > 1) then
+				a.charge_timestamp = time()
+				a.charging_timestamp = nil
+				a.charge_wait=flr(rnd(7))+1
+				a.ci = 0
+				a.charging = false
+
+				a.bubble_wait += 2
+				a.friction=a.o_friction
+			end
+		end
+	end
+
+	-- blow bubbles
+	if (not a.charging) then
+		if (a.bubble_timestamp == nil or time() - a.bubble_timestamp > a.bubble_wait) then
+			a.bubbling=true
+
+			a.bi += 1
+
+			if (a.bi > 20) then
+				a.current_anim="idle"
+			else
+				a.current_anim="bide"
+			end
+
+			if (a.bi > 20 and a.bi % 3 == 0) then
+				sfx(25)
+
+				local b = define_actor()
+				b.frame=107
+				b.anims={idle={s=107,e=108,l=true}}
+				b.anim_duration=0.25
+				b.collidible=false
+				b.x=a.x+0.5
+				b.y=a.y+0.5
+				local d = direction(pl,{x=a.x+0.5,y=a.y+0.5})
+				b.max_v=100
+				b.vx = (d.x / 8.5) + ((rnd(3)-1) / 25)
+				b.vy = (d.y / 8.5) + ((rnd(3)-1) / 25)
+				b.friction=0
+				b.max_lifetime=1.2
+				create_actor(b)
+			end
+
+			if (a.bi > 45) then
+				a.bubble_timestamp=time()
+				a.bubble_wait=flr(rnd(7))+1
+				a.charge_wait += 2
+				a.bubbling=false
+				a.bi=0
+				a.friction=a.o_friction
+				return
+			end
+			
+			a.vx=0
+			a.vy=0
+			a.friction=1
+		end
+	end
+	
+	update_actor(a)
+	update_enemy_health(a)
+
+	create_dust(a,73)
+	execute_on_frame(a,73,"sfx_10",function() sfx(10) end)
+	
+	if (not a.bubbling and not a.charging) then
+		if (not a.invi_timestamp or time() - a.invi_timestamp > 0.1) then
+			a.current_anim="walk"
+			
+			if (pl.x < a.x + 0.5) a.vx -= a.acc
+			if (pl.x > a.x + 0.5) a.vx += a.acc
+			if (pl.y < a.y + 0.5) a.vy -= a.acc
+			if (pl.y > a.y + 0.5) a.vy += a.acc
+		else
+			a.current_anim="idle"
+		end
+	end
 end
 
 function update_bouncer(a) 
@@ -496,7 +655,8 @@ function update_bouncer(a)
 end
 
 function update_enemy_health(a) 
-	local hit_atk = is_solid_area(a.x, a.y, a.w, a.h, f_pl_atk)
+	local o = (0.5 * (-1 + a.s))
+	local hit_atk = is_solid_area(a.x + o, a.y + o, a.w, a.h, f_pl_atk)
 
 	if (hit_atk.hit and not actor_is_invincible(a)) then
 		a.health -= hit_atk.a.damage

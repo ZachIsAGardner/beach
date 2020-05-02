@@ -22,7 +22,7 @@ function move_actor(a)
 					a.x = a.x - skin
 				end
 
-				a.vx=0
+				-- a.vx=0
 
 				if (left) then 
 					a.col.left=true
@@ -53,7 +53,7 @@ function move_actor(a)
 					a.y = a.y - skin
 				end
 
-				a.vy=0
+				-- a.vy=0
 
 				if (top) then 
 					a.col.top=true

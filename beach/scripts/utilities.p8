@@ -41,6 +41,17 @@ function distance(o1, o2)
 	}
 end
 
+function direction(o1,o2) 
+	local r ={x=0,y=0}
+
+	local d = distance(o1,o2)
+	local l = length(d.x,d.y)
+	r.x = d.x / l
+	r.y = d.y / l
+
+	return r
+end
+
 function pal_all(c)
 	for i=0,15 do
 		pal(i,c,0)

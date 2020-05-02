@@ -18,7 +18,7 @@ door_timestamp=nil
 current_room=nil
 visited_rooms={}
 
-debug_mode=false
+debug_mode=true
 
 started=false
 started_timestamp=nil
@@ -100,7 +100,7 @@ function cleanup_rooms()
 		if (first_visit) then
 			local r_grid = get_room_grid()
 			for ra in all(actors_to_respawn) do
-				if (ra.room.x==r_grid.x and ra.room.y==r_grid.y) spawn_actor(ra)
+				if (ra.room.x==r_grid.x and ra.room.y==r_grid.y) respawn_actor(ra)
 			end
 			init_actors()
 			add(visited_rooms,current_room)

@@ -124,14 +124,28 @@ function init_actors()
 
 	-- crab
 	replace_with_actor(73,33,function(a)
+		a.bi=0
+		a.bubble_wait=3
+
+		a.target={x=0,y=0}
+		a.ci=0
+		a.charge_wait=1
+
+		a.spawn_wait=5
+		
+		a.friction=0.25
+		a.o_friction=0.25
+		a.acc=0.015
+		a.o_acc=0.015
 		a.w=0.8
 		a.h=0.8
 		a.s=2
-		a.max_health=12
-		a.health=12
+		a.max_health=16
+		a.health=16
 		a.anims={
 			idle={s=73,e=73,l=true},
-			walk={s=73,e=75,l=true}
+			walk={s=73,e=75,l=true},
+			bide={s=105,e=105,l=true},
 		}
 		a.is_active=false
 		a.update=update_crab
@@ -141,6 +155,10 @@ function init_actors()
 			end
 		end
 		a.before_destroy=function(a) 
+			for ac in all(actors) do
+				if (ac.tag=="baby_crab") del(actors,ac)
+			end
+
 			-- destroy fences
 			local room = get_room_grid()
 	
@@ -155,19 +173,19 @@ function init_actors()
 	end)
 
 	-- checkpoint
-	replace_with_actor(123,33,function(a) 
+	replace_with_actor(103,33,function(a) 
 		a.z = 0
 		a.update=function(a) 
 			if (pl and pl.checkpoint and pl.checkpoint.id == a.id) then
-				a.frame = 124
+				a.frame = 104
 			else
-				a.frame = 123
+				a.frame = 103
 			end
 		end
 	end)
 
 	-- coin
-	replace_with_actor(107,33,function(a)
+	replace_with_actor(102,33,function(a)
 		a.z=0
 	end)
 
@@ -178,7 +196,7 @@ function init_actors()
 	replace_with_actor(77,33)
 
 	-- bomb drop
-	replace_with_actor(105,33)
+	replace_with_actor(100,33)
 	
 	-- waves
 	replace_with_actor(

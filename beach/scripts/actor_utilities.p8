@@ -104,7 +104,7 @@ function replace_with_actor(t, r, callback, define, should_respawn)
     end end
 end
 
-function spawn_actor(da)
+function respawn_actor(da)
 	if (not da.define) da.define = define_actor
 
 	local a = da.define()
@@ -151,7 +151,7 @@ function create_random_drop(a)
 end
 
 function create_coins(a)
-	create_drop(a,107)
+	create_drop(a,102)
 end
 
 function create_hearts(a)
@@ -159,7 +159,7 @@ function create_hearts(a)
 end
 
 function create_bombs(a)
-	create_drop(a,105)
+	create_drop(a,100)
 end
 
 function create_drop(a,f) 
