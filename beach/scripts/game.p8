@@ -18,7 +18,7 @@ door_timestamp=nil
 current_room=nil
 visited_rooms={}
 
-debug_mode=true
+debug_mode=false
 
 started=false
 started_timestamp=nil
