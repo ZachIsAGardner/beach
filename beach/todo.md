@@ -1,14 +1,14 @@
 # beach:
 
 in progress:
-* crab babies
-* crab boss
+
 
 todo:
-* dungeon sequence
-* bug: loading actors from one tile to right and bottom of current room 
+
+
 
 maybe:
+* add music
 * add leaping enemy
 * add rotating fire enemy
 * delete enemies after leaving room, or 2 rooms away

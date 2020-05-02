@@ -269,6 +269,7 @@ function update_player(a)
 		hit_boat.a.i=0
 
 		hit_boat.a.frame=43
+		sfx(13)
 		hit_boat.a.vx=-0.03
 		hit_boat.a.friction=-0.025
 		hit_boat.a.max_v=100
@@ -574,13 +575,13 @@ function update_crab(a)
 
 			a.bi += 1
 
-			if (a.bi > 20) then
+			if (a.bi > 25) then
 				a.current_anim="idle"
 			else
 				a.current_anim="bide"
 			end
 
-			if (a.bi > 20 and a.bi % 3 == 0) then
+			if (a.bi > 25 and a.bi % 3 == 0) then
 				sfx(25)
 
 				local b = define_actor()
@@ -592,8 +593,8 @@ function update_crab(a)
 				b.y=a.y+0.5
 				local d = direction(pl,{x=a.x+0.5,y=a.y+0.5})
 				b.max_v=100
-				b.vx = (d.x / 8.5) + ((rnd(3)-1) / 25)
-				b.vy = (d.y / 8.5) + ((rnd(3)-1) / 25)
+				b.vx = (d.x / 9.25) + ((rnd(3)-1) / 25)
+				b.vy = (d.y / 9.25) + ((rnd(3)-1) / 25)
 				b.friction=0
 				b.max_lifetime=1.2
 				create_actor(b)

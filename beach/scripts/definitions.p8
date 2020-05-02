@@ -78,8 +78,8 @@ function define_player()
     a.friction = 0.185
 
 	a.coins = 0
-	a.bombs = 3
-	a.max_bombs = 5
+	a.bombs = 1
+	a.max_bombs = 3
 
 	a.health = 4
 	a.max_health = 6

@@ -7,11 +7,12 @@ __lua__
 function draw_player(a)
 	draw_actor(a)
 
+	rectfill(camera_pos.x+3+6,camera_pos.y+12,camera_pos.x+2+11,camera_pos.y+9+5,c_dark_blue)
+	print(a.bombs, camera_pos.x+9, camera_pos.y+10, c_white)
 	spr(101,camera_pos.x+1, camera_pos.y+8)
-	print(a.bombs, camera_pos.x+9, camera_pos.y+9, c_white)
 
-	spr(95,camera_pos.x+2, camera_pos.y+17)
-	print(a.coins, camera_pos.x+9, camera_pos.y+17, c_white)
+	-- spr(95,camera_pos.x+2, camera_pos.y+17)
+	-- print(a.coins, camera_pos.x+9, camera_pos.y+17, c_white)
 end
 
 function draw_actor(a)
@@ -36,7 +37,7 @@ end
 function draw_fixed_health()
 	rectfill(
 		2+camera_pos.x,
-		3+camera_pos.y,
+		4+camera_pos.y,
 		8*(pl.max_health)+camera_pos.x,
 		6+camera_pos.y,
 		c_dark_blue

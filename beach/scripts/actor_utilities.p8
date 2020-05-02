@@ -72,7 +72,7 @@ function replace_with_actor(t, r, callback, define, should_respawn)
 
 	local room = get_room_grid()
 	
-    for y=room.y,room.y+16 do for x=room.x,room.x+16 do
+    for y=room.y,room.y+15 do for x=room.x,room.x+15 do
         if (mget(x,y) == t) then
 			if (r) then 
 				mset(x,y,r)
@@ -143,9 +143,9 @@ function create_hit_effect(a)
 end
 
 function create_random_drop(a)
-	local r = ceil(rnd(7))
+	local r = ceil(rnd(5))
 
-	if (r == 1) create_coins(a)
+	-- if (r == 1) create_coins(a)
 	if (r == 2) create_hearts(a)
 	if (r == 3) create_bombs(a)
 end

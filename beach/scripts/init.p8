@@ -201,7 +201,7 @@ function init_actors()
 	-- waves
 	replace_with_actor(
 		51,
-		nil,
+		52,
 		function(a) 
 			a.anims={
 				idle={s=51,e=56,l=true}
