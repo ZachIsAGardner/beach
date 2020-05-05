@@ -133,56 +133,62 @@ function update_player(a)
 	end
 
 	-- bomb
-	if (btn(5) and a.five_released and a.bombs > 0) then
-		a.bombs -= 1
+	if (btn(5) and a.five_released and a.current_anim != "attack") then
+		if (a.bombs <= 0) then
+			sfx(28)
+		else
+			a.bombs -= 1
+			a.bomb_timestamp = time()
 
-		local bomb = define_actor()
+			local bomb = define_actor()
 
-		bomb.z=0
-		bomb.x=a.x
-		bomb.y=a.y
-		bomb.frame=101
-		bomb.w=0.25
-		bomb.h=0.25
-		bomb.color=c_red
-		bomb.i=0
+			bomb.z=0
+			bomb.x=a.x
+			bomb.y=a.y
+			bomb.frame=101
+			bomb.w=0.25
+			bomb.h=0.25
+			bomb.color=c_red
+			bomb.i=0
 
-		bomb.draw=function(ba) 
-			if (ceil(bomb.i) % 2 == 0 and time() - bomb.birth_timestamp > 0.5) then
-				pal_all(c_red)
-			else
-				pal()
+			bomb.draw=function(ba) 
+				if (ceil(bomb.i) % 2 == 0 and time() - bomb.birth_timestamp > 0.5) then
+					pal_all(c_red)
+				else
+					pal()
+				end
+
+				draw_actor(ba)
 			end
 
-			draw_actor(ba)
-		end
+			bomb.update=function(ba)
+				bomb.i+=0.5
 
-		bomb.update=function(ba)
-			bomb.i+=0.5
+				if (time() - ba.birth_timestamp > 1) then
+					local circle = define_circle()
 
-			if (time() - ba.birth_timestamp > 1) then
-				local circle = define_circle()
+					circle.x = ba.x
+					circle.y = ba.y
+					circle.z=0
+					circle.r=1.7
+					circle.w=1.7
+					circle.h=1.7
+					circle.flags[f_pl_atk]=true
+					circle.color=c_red
+					circle.max_lifetime = 0.1
+					circle.damage=2
 
-				circle.x = ba.x
-				circle.y = ba.y
-				circle.z=0
-				circle.r=1.7
-				circle.w=1.7
-				circle.h=1.7
-				circle.flags[f_pl_atk]=true
-				circle.color=c_red
-				circle.max_lifetime = 0.1
-				circle.damage=2
-
-				ba.atk_instance = create_actor(circle)
-				sfx(17)
-				del(actors, ba)
-			else
-				sfx(16)
+					ba.atk_instance = create_actor(circle)
+					sfx(17)
+					del(actors, ba)
+				else
+					sfx(16)
+				end
 			end
-		end
 
-		create_actor(bomb)
+			create_actor(bomb)
+
+		end
 
 		a.five_released = false
 	end
@@ -195,6 +201,7 @@ function update_player(a)
 	local hit_health = is_solid_area(a.x, a.y, a.w, a.h, f_health)
 	if (hit_health.hit) then
 		a.health+=1
+		a.health_pickup_timestamp=time()
 		if (a.health > a.max_health) a.health = a.max_health
 		del(actors, hit_health.a)
 		sfx(14)
@@ -204,6 +211,7 @@ function update_player(a)
 	local hit_bomb_drop = is_solid_area(a.x, a.y, a.w, a.h, f_bomb_drop)
 	if (hit_bomb_drop.hit) then
 		a.bombs+=1
+		a.bomb_pickup_timestamp=time()
 		if (a.bombs > a.max_bombs) a.bombs = a.max_bombs
 		del(actors, hit_bomb_drop.a)
 		sfx(14)

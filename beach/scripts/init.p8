@@ -7,6 +7,7 @@ __lua__
 function start() 
 	started=true
 	started_timestamp=time()
+	sfx(29)
 end
 
 function init_actors()
@@ -28,7 +29,7 @@ function init_actors()
 		function(a)
 			a.tag="player"
 			a.update=function(a)
-				if (started and time() - started_timestamp > 2.5 and not a.go) then
+				if (started and time() - started_timestamp > 3.25 and not a.go) then
 					a.i=0
 					a.go=true
 				end
@@ -140,8 +141,8 @@ function init_actors()
 		a.w=0.8
 		a.h=0.8
 		a.s=2
-		a.max_health=16
-		a.health=16
+		a.max_health=20
+		a.health=20
 		a.anims={
 			idle={s=73,e=73,l=true},
 			walk={s=73,e=75,l=true},
@@ -248,6 +249,7 @@ function init_actors()
 	replace_with_actor(38,33,function(a) 
 		a.w=0.5 
 		a.h=0.5 
+		a.tag="barrel"
 		a.update=function(a)
 			local hit_atk = is_solid_area(a.x,a.y,a.w,a.h,f_pl_atk)
 			if (hit_atk.hit) then

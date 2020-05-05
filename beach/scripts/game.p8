@@ -42,7 +42,7 @@ end
 
 --update
 function _update()
-	if (started) then
+	if (started and time() - started_timestamp > 0.75) then
 		-- move camera normally
 		destination = {
 			x = get_room().x,
@@ -82,9 +82,14 @@ end
 function cleanup_rooms()
 	local r = get_room()
 
+	if (not started) then
+		r.y += 128
+	end
+
 	local new_room = false
 	if (current_room == nil or not (r.x == current_room.x and r.y == current_room.y)) then
 		new_room = true
+		-- log("x: " .. r.x .. " y: " .. r.y)
 	end
 	current_room = r
 
@@ -113,7 +118,7 @@ function cleanup_rooms()
 		disabled_actors={}
 
 		for a in all(actors) do
-			if (not is_in_room(a)) then 
+			if (not is_in_room(a) and started) then 
 				if (a.destroy_offscreen) then
 					del(actors,a)
 				else
@@ -142,10 +147,12 @@ function _draw()
 		end
 	end
 
-    if (not started) then
-        -- title
-        print("beach", 0+52, 128+52, c_white)
-        print("- press " .. p_prompt .. " -", 0-12+52, 128+8+52, c_white)
+    if (started_timestamp == nil or time() - started_timestamp < 0.2) then
+		if (started) pal_all(c_white)
+		spr(203,48,158,4,4)
+		spr(194,36,180,8,2)
+        print("- press " .. p_prompt .. " -", 0-12+52, 128+16+52, c_white)
+		pal()
     end
 
 	if (game_ended) then

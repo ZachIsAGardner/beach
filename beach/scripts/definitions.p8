@@ -79,7 +79,7 @@ function define_player()
 
 	a.coins = 0
 	a.bombs = 1
-	a.max_bombs = 3
+	a.max_bombs = 5
 
 	a.health = 4
 	a.max_health = 6
@@ -129,6 +129,7 @@ function define_particle(s,e)
 	a.anims={idle={s=s,e=e,l=false,d=true}}
 	a.anim_duration=0.15
 	a.destroy_offscreen=true
+	a.collidible=false
 
 	return a
 end

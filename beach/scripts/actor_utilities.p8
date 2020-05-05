@@ -71,7 +71,10 @@ function replace_with_actor(t, r, callback, define, should_respawn)
 	if (not define) define = define_actor
 
 	local room = get_room_grid()
-	
+	if (not started) then 
+		room.y += 16
+	end
+
     for y=room.y,room.y+15 do for x=room.x,room.x+15 do
         if (mget(x,y) == t) then
 			if (r) then 
@@ -143,9 +146,24 @@ function create_hit_effect(a)
 end
 
 function create_random_drop(a)
-	local r = ceil(rnd(5))
+	if (not a.tag == "barrel") then
+		local hit_col = is_solid(a.x,a.y,f_col)
+		if (hit_col.hit) return
+	end
 
-	-- if (r == 1) create_coins(a)
+	local r = ceil(rnd(7))
+
+	if (pl.health <= 2) then
+		create_hearts(a)
+		return
+	end
+
+	if (pl.bombs <= 2) then
+		if (r == 1) create_hearts(a)
+		if (r > 4) create_bombs(a)
+		return
+	end
+
 	if (r == 2) create_hearts(a)
 	if (r == 3) create_bombs(a)
 end
