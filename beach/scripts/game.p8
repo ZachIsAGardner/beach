@@ -27,6 +27,8 @@ game_ended=false
 game_ended_timestamp=nil
 game_ended_process={}
 
+crab_defeated=false
+
 logs = {}
 log_count = 0
 
@@ -149,9 +151,12 @@ function _draw()
 
     if (started_timestamp == nil or time() - started_timestamp < 0.2) then
 		if (started) pal_all(c_white)
-		spr(203,48,158,4,4)
-		spr(194,36,180,8,2)
-        print("- press " .. p_prompt .. " -", 0-12+52, 128+16+52, c_white)
+		sspr(88,96,32,32,32,140,64,64)
+		sspr(16,96,64,16,7,184,128,32)
+        print("- press " .. p_prompt .. " -", 0-12+52, 128+32+52, c_white)
+		-- spr(203,48,158,4,4)
+		-- spr(194,36,180,8,2)
+        -- print("- press " .. p_prompt .. " -", 0-12+52, 128+16+52, c_white)
 		pal()
     end
 

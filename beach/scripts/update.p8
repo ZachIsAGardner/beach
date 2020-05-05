@@ -390,6 +390,8 @@ function transition_screen()
 end
 
 function update_shooter(a)
+	if (a.shoot_timestamp == nil) a.shoot_timestamp = time()
+
 	update_actor(a)
 	update_enemy_health(a)
 
@@ -440,8 +442,13 @@ function update_follower(a)
 end
 
 function update_crab(a) 
+	if (crab_defeated) then
+		del(actors, a)
+		return
+	end
+
 	local d = distance(a,pl)
-	if (abs(d.y) < 3 and abs(d.x) < 4 and not a.triggered) then 
+	if (abs(d.y) < 3 and abs(d.x) < 4 and not a.triggered and not crab_defeated) then 
 		a.triggered = true
 		a.i=0
 	end

@@ -189,6 +189,13 @@ function create_drop(a,f)
 		a2.vx = (rnd(2)-1)*0.75
 		a2.vy = (rnd(2)-1)*0.75
 		a2.frame=f
+		a2.update=function(a2) 
+			update_actor(a2)
+
+			-- spawned inside wall, delete it
+			local hit_col = is_solid(a2.x,a2.y,f_col)
+			if (hit_col.hit) then log("in wall") del(actors, a2) end
+		end
 
 		create_actor(a2)
 	end

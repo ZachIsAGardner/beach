@@ -156,6 +156,7 @@ function init_actors()
 			end
 		end
 		a.before_destroy=function(a) 
+			crab_defeated = true
 			for ac in all(actors) do
 				if (ac.tag=="baby_crab") del(actors,ac)
 			end
