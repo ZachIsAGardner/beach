@@ -1,5 +1,5 @@
-# pico8_carts
-A repo of my pico8 projects.
+# beach
+Stranded on a mysterious beach, you must explore and battle with evil monsters to escape!
 
 ## PICO-8
 
