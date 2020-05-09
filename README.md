@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="384" height="384" src="https://github.com/ZachIsAGardner/beach/blob/master/documents/beach_9.gif">
+</p>
+
 # beachcomber
 Stranded on a mysterious beach, you must explore and battle with evil monsters to escape!
 
