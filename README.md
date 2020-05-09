@@ -5,7 +5,7 @@
 # beachcomber
 Stranded on a mysterious beach, you must explore and battle with evil monsters to escape!
 
-With this source code you can run this game in a copy of PICO-8. If you're just intersted in playing the game and you don't own PICO-8 you can check it here: https://zachisagardner.itch.io/beachcomber
+With this source code you can run this game in a copy of PICO-8. If you're just interested in playing the game and you don't own PICO-8 you can check it out here: https://zachisagardner.itch.io/beachcomber
 
 ## PICO-8
 
