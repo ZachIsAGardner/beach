@@ -1,4 +1,4 @@
-# beach
+# beachcomber
 Stranded on a mysterious beach, you must explore and battle with evil monsters to escape!
 
 ## PICO-8
